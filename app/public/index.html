@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pogoda</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #eef2f3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      #weather-result {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Pogoda</h1>
+      <form id="form">
+        <input id="city" type="text" placeholder="Podaj miasto" required />
+        <button type="submit">Pokaż</button>
+      </form>
+      <div id="weather-result"></div>
+    </div>
+    <script>
+      const apiKey = "308d1f68b5ffa67c12a39043acbb6042";
+      document.getElementById("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const city = document.getElementById("city").value.trim();
+        if (!city) return;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+          city
+        )}&appid=${apiKey}&units=metric&lang=pl`;
+        try {
+          const res = await fetch(url);
+          const json = await res.json();
+          if (json.cod !== 200) {
+            document.getElementById("weather-result").innerText =
+              "Nie znaleziono pogody.";
+            return;
+          }
+          document.getElementById(
+            "weather-result"
+          ).innerHTML = `<h2>${json.name}, ${json.sys.country}</h2><p>Temperatura: ${json.main.temp}°C</p><p>Opis: ${json.weather[0].description}</p><p>Wilgotność: ${json.main.humidity}%</p><p>Wiatr: ${json.wind.speed} m/s</p>`;
+        } catch (e) {
+          console.error(e);
+          document.getElementById("weather-result").innerText = "Błąd.";
+        }
+      });
+    </script>
+  </body>
+</html>
