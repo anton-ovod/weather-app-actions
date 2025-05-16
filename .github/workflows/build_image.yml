@@ -52,17 +52,15 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push to GHCR (but only to local Docker cache, not public)
-        id: build
+      - name: Build image for scanning
+        id: build-scan
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: false # do not push yet
+          platforms: linux/amd64
+          push: false
           load: true
-          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
-          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
           tags: ${{ steps.meta.outputs.tags }}
 
       - name: Docker Scout CVE Scan
@@ -73,12 +71,6 @@ jobs:
           image: ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
           only-severities: critical,high
           exit-code: true # Fail on high/critical
-          sarif-file: scout-report.sarif
-
-      - name: Upload SARIF to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: scout-report.sarif
 
       - name: Push to GHCR (only if scan passed)
         if: success()
