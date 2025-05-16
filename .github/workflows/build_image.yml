@@ -15,8 +15,8 @@ jobs:
       security-events: write # for Docker Scout reports
 
     env:
-      GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/weather-app
-      CACHE_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/cache:weather-app
+      GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/weather-app-actions
+      CACHE_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/cache:weather-app-actions
 
     steps:
       - name: Checkout repository
