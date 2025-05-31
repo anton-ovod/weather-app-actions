@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # for GHCR
-      security-events: write # for Docker Scout reports
+      packages: write
+      security-events: write
 
     env:
       GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/weather-app-actions
-      CACHE_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/cache:weather-app-actions
+      CACHE_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/weather-app-actions:cache
 
     steps:
       - name: Checkout repository
@@ -53,31 +53,26 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build image for scanning
-        id: build-scan
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
           platforms: linux/amd64
-          push: false
           load: true
           tags: ${{ steps.meta.outputs.tags }}
 
       - name: Docker Scout CVE Scan
-        id: scout
         uses: docker/scout-action@v1
         with:
           command: cves
           image: ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
           only-severities: critical,high
-          exit-code: true # Fail on high/critical
+          exit-code: true
 
-      - name: Push to GHCR (only if scan passed)
+      - name: Push to GHCR
         if: success()
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
