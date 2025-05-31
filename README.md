@@ -170,7 +170,7 @@ name: Docker Scout CVE Scan
 
 W tym etapie odbywa się docelowe zbudowanie wieloarchitekturowego obrazu Dockera oraz jego wypchnięcie do GitHub Container Registry.
 
-Warto podkreślić, że wcześniej zbudowany obraz nie jest ponownie budowany od zera – Docker wykorzystuje cache oraz warstwy z wcześniejszego builda, co w połączeniu z `cache-from` znacząco przyspiesza proces. W praktyce oznacza to, że obraz jest tylko tagowany odpowiednimi tagami oraz wypychany do rejestru, bez potrzeby powtarzania kosztownej operacji pełnej budowy.
+Warto podkreślić, że wcześniej zbudowany obraz nie jest ponownie budowany od zera – Docker wykorzystuje cache oraz warstwy z wcześniejszego builda, co w połączeniu z [`cache-from`](https://hub.docker.com/repository/docker/antonovod/weather-app-actions/general) znacząco przyspiesza proces. W praktyce oznacza to, że obraz jest tylko tagowany odpowiednimi tagami oraz wypychany do rejestru, bez potrzeby powtarzania kosztownej operacji pełnej budowy.
 
 ```yaml
 name: Push to GHCR
