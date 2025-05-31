@@ -9,10 +9,6 @@ on:
 jobs:
   build-scan-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write # for GHCR
-      security-events: write # for Docker Scout reports
 
     env:
       GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/weather-app-actions
