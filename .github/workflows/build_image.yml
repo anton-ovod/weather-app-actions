@@ -69,7 +69,7 @@ jobs:
           exit-code: true
 
       - name: Push to GHCR
-        if: success()
+        if: failure()
         uses: docker/build-push-action@v5
         with:
           context: .
